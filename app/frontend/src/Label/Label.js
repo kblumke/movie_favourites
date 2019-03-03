@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import './Label.css'
+import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Image from 'react-bootstrap/Image';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Row from 'react-bootstrap/Row';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 class Label extends PureComponent {
@@ -18,6 +18,7 @@ class Label extends PureComponent {
             imdbID: '',
             type: '',
             favorite: false,
+            buttonType: 'primary'
     };
     }
 
@@ -31,13 +32,6 @@ class Label extends PureComponent {
 
         return (
             <div className="Label">
-                <FontAwesomeIcon
-                    name={favorite ? 'star' : 'star-o'}
-                    color={favorite ? '#FFD700' : 'rgb(255,215,0)'}
-                    size={30}
-                    style={{ marginBottom: 10, marginTop: 20 }}
-                    onPress={() => this.setState({ favorite: !favorite })}
-                />
                 <Container>
                 <Row>
                     <Col xs={6} md={4}>
@@ -49,15 +43,16 @@ class Label extends PureComponent {
                             <ListGroup.Item><b>Year of production:</b> { year }</ListGroup.Item>
                             <ListGroup.Item><b>imdbID:</b> { imdbID }</ListGroup.Item>
                             <ListGroup.Item><b>Type:</b> { type }</ListGroup.Item>
-                            <ListGroup.Item>{favorite ? 'Remove from favorite' : 'Add to favorite'}</ListGroup.Item>
+                            <ListGroup.Item>
+                                <Button 
+                                    variant={favorite ? "danger" : "primary"} 
+                                    size="sm"
+                                    onClick={() => this.setState({ favorite: !favorite })}
+                                >
+                                    {favorite ? 'Remove from favorite' : 'Add to favorite'}
+                                </Button>
+                            </ListGroup.Item>
                         </ListGroup>
-                        <FontAwesomeIcon
-                            name={favorite ? 'star' : 'star-o'}
-                            color={favorite ? '#FFD700' : 'rgb(255,215,0)'}
-                            size={30}
-                            style={{ marginBottom: 10, marginTop: 20 }}
-                            onPress={() => this.setState({ favorite: !favorite })}
-                        />
                     </Col>
                 </Row>
                 </Container>

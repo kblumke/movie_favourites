@@ -7,13 +7,15 @@ import Label from './Label/Label';
 class App extends Component {
 
   state = {
-    data: []
+    data: [],
+    active: 0,
+    all_items: 0
   }
 
   handleClick = (e) => {
     fetch('http://www.omdbapi.com/?apikey=1dc40cfd&s=' + e)
     .then(response => response.json())
-    .then(data => this.setState({ data: data['Search']}))
+    .then(data => this.setState({ data: data['Search'], all_items: data['totalResults']}))
   }
 
   render() {
@@ -22,6 +24,7 @@ class App extends Component {
 
     return (
       <div className="App container">
+        <h1>Movie favourites</h1>
         <Nav className="justify-content-center" variant="tabs" defaultActiveKey="search">
           <Nav.Item>
             <Nav.Link eventKey="search">Search</Nav.Link>
