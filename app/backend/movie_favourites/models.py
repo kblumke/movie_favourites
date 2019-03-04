@@ -15,9 +15,9 @@ class Film(models.Model):
         (EPISODE, 'episode'),
         (GAME, 'game'))
 
-    title = models.CharField(max_length=128, unique=True)
+    title = models.CharField(max_length=128)
     year = models.CharField(max_length=4)
-    imdbID = models.CharField(max_length=12)
+    imdbID = models.CharField(max_length=12, unique=True)
     movie_type = models.PositiveIntegerField(choices=TYPE_CHOICES)
     poster_url = models.CharField(max_length=128)
     
