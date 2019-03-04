@@ -3,24 +3,37 @@ import './App.css';
 import Nav from 'react-bootstrap/Nav';
 import Search from './Search/Search';
 import Label from './Label/Label';
+import Pagination from "react-js-pagination";
+
 
 class App extends Component {
 
   state = {
     data: [],
     active: 0,
-    all_items: 0
+    all_items: 0,
+    activePage: 1,
   }
 
   handleClick = (e) => {
-    fetch('http://www.omdbapi.com/?apikey=1dc40cfd&s=' + e)
+    this.last_query = 'http://www.omdbapi.com/?apikey=1dc40cfd&s=' + e
+    fetch(this.last_query)
     .then(response => response.json())
     .then(data => this.setState({ data: data['Search'], all_items: data['totalResults']}))
   }
 
-  render() {
+  handlePageChange = (pageNumber) => {
+    console.log(`active page is ${pageNumber}`);
+    fetch(this.last_query + '&page=' + pageNumber)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({data: data['Search'], activePage: pageNumber});
+      })
+  }
 
-    const data = this.state.data;
+  render() {
+    console.log(this.state);
+
 
     return (
       <div className="App container">
@@ -36,15 +49,25 @@ class App extends Component {
         <Search
           onClick={this.handleClick}
         />
-          <div className="Results">
-          {data.map((item) =>
+        <div className="Results">
+          {this.state.data.map((item) =>
             <Label 
+              key={ item['imdbID'] }
               image={ item['Poster'] }
               title={ item['Title'] }
               year= { item['Year'] }
               imdbID={ item['imdbID'] }
               type={ item['Type'] } />
           )}
+          </div>
+          <div>
+            <Pagination
+              activePage={this.state.activePage}
+              itemsCountPerPage={10}
+              totalItemsCount={this.state.all_items}
+              pageRangeDisplayed={5}
+              onChange={this.handlePageChange}
+            />
           </div>
       </div>
     );
