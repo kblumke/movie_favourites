@@ -4,14 +4,16 @@ from json.decoder import JSONDecodeError
 from django.shortcuts import render
 
 from rest_framework.generics import GenericAPIView
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
 
 from movie_favourites.models import Film
 from movie_favourites.serializers import FavouritesSerializer
 
 
-class FavouritesView(GenericAPIView):
+class FavouritesView(APIView):
     """
     Endpoint for managing film favourites.
     """
@@ -41,11 +43,11 @@ class FavouritesView(GenericAPIView):
         """
         try:
             film, _ = Film.objects.get_or_create(
-                imdbID=request.POST.get('imdbID'),
-                poster_url=request.POST.get('Poster'),
-                title=request.POST.get('Title'),
-                year=request.POST.get('Year'),
-                movie_type=Film.TYPE_NAME_VALUE[request.POST.get('Type')])
+                imdbID=request.data.get('imdbID'),
+                poster_url=request.data.get('Poster'),
+                title=request.data.get('Title'),
+                year=request.data.get('Year'),
+                movie_type=Film.TYPE_NAME_VALUE[request.data.get('Type')])
             return Response(status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)

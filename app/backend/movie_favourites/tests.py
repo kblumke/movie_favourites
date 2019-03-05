@@ -79,7 +79,7 @@ class ViewsTest(TestCase):
         self.prepare_data()
 
         request = self.factory.get('/movies/favourites')
-        response = FavouritesView().get(request)
+        response = FavouritesView().as_view()(request)
         resp = [
             {
                 'Poster': 'Poster',
@@ -104,9 +104,6 @@ class ViewsTest(TestCase):
             }
         ]
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response._headers,
-            {'content-type': ('Content-Type', 'text/html; charset=utf-8')})
         self.assertEqual(response.data, resp)
 
     def test_adding_favourite(self):
@@ -118,9 +115,10 @@ class ViewsTest(TestCase):
                 'Type': 'movie',
                 'Year': 'Year',
                 'imdbID': 'a1kjnj'
-            }
+            },
+            content_type='application/json'
         )
-        response = FavouritesView().post(request)
+        response = FavouritesView().as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(len(Film.objects.all()), 0)
 
@@ -133,9 +131,10 @@ class ViewsTest(TestCase):
                 'Type': 'movies',
                 'Year': 'Year',
                 'imdbID': 'a1kjnj'
-            }
+            },
+            content_type='application/json'
         )
-        response = FavouritesView().post(request)
+        response = FavouritesView().as_view()(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(len(Film.objects.all()), 0)
 
@@ -149,7 +148,7 @@ class ViewsTest(TestCase):
             },
             content_type='application/json'
         )
-        response = FavouritesView().delete(request)
+        response = FavouritesView().as_view()(request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(Film.objects.all()), 2)
 
@@ -162,6 +161,6 @@ class ViewsTest(TestCase):
                 'imdbID': 'a1kjnj111'
             }
         )
-        response = FavouritesView().delete(request)
+        response = FavouritesView().as_view()(request)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(len(Film.objects.all()), 3)
