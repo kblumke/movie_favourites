@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Search from './Search/Search';
 import Label from './Label/Label';
 import Pagination from "react-js-pagination";
-
+import { favouritesURL } from './config'
 
 class App extends Component {
 
@@ -13,6 +13,7 @@ class App extends Component {
     active: 0,
     all_items: 0,
     activePage: 1,
+    favourites: []
   }
 
   handleClick = (e) => {
@@ -29,6 +30,12 @@ class App extends Component {
       .then(data => {
         this.setState({data: data['Search'], activePage: pageNumber});
       })
+  }
+
+  componentDidMount = () => {
+    fetch(favouritesURL)
+    .then(response => response.json())
+    .then(data => this.setState({ favourites: data.map((d) => d['imdbID'] ) }))
   }
 
   render() {
@@ -57,7 +64,8 @@ class App extends Component {
               title={ item['Title'] }
               year= { item['Year'] }
               imdbID={ item['imdbID'] }
-              type={ item['Type'] } />
+              type={ item['Type'] } 
+              favorite={ this.state.favourites.indexOf(item['imdbID']) !== -1 }/>
           )}
           </div>
           <div>

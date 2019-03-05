@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/Container';
 import Image from 'react-bootstrap/Image';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Row from 'react-bootstrap/Row';
+import { favouritesURL } from '../config'
 
 
 class Label extends PureComponent {
@@ -25,6 +26,35 @@ class Label extends PureComponent {
     componentWillMount() {
         const { image, title, year, imdbID, type, favorite } = this.props;
         this.setState({ image, title, year, imdbID, type, favorite });
+    }
+
+    setFavourite = (favourite) => {
+        this.setState({favorite: favourite});
+        if (favourite) {
+            fetch(favouritesURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'Poster': this.state.image,
+                    'Title': this.state.title,
+                    'Type': this.state.type,
+                    'Year': this.state.year,
+                    'imdbID': this.state.imdbID
+                })
+            })
+        } else {
+            fetch(favouritesURL, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    'imdbID': this.state.imdbID
+                })
+            })
+        }
     }
 
     render() {
@@ -47,7 +77,7 @@ class Label extends PureComponent {
                                 <Button 
                                     variant={favorite ? "danger" : "primary"} 
                                     size="sm"
-                                    onClick={() => this.setState({ favorite: !favorite })}
+                                    onClick={() => this.setFavourite(!favorite)}
                                 >
                                     {favorite ? 'Remove from favorite' : 'Add to favorite'}
                                 </Button>
