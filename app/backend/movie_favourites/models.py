@@ -5,15 +5,18 @@ class Film(models.Model):
     """
     Films model
     """
-    MOVIE = 'movie' 
-    SERIES = 'series'
-    EPISODE = 'episode'
-    GAME = 'game'
+    MOVIE = 1 
+    SERIES = 2
+    EPISODE = 3
+    GAME = 4
     TYPE_CHOICES = (
         (MOVIE, 'movie'),
         (SERIES, 'series'),
         (EPISODE, 'episode'),
         (GAME, 'game'))
+
+    TYPE_NAME_VALUE = {name: size for size, name in TYPE_CHOICES}
+    TYPE_VALUE_NAME = {size: name for size, name in TYPE_CHOICES}
 
     title = models.CharField(max_length=128)
     year = models.CharField(max_length=4)
