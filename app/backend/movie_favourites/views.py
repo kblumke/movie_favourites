@@ -8,7 +8,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from movie_favourites.models import Film
@@ -20,7 +20,7 @@ class FavouritesView(APIView):
     Endpoint for managing film favourites.
     """
     serializer_class = FavouritesSerializer
-    authentication_classes = (SessionAuthentication,)
+    authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
