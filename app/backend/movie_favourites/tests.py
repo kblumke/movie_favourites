@@ -146,7 +146,8 @@ class ViewsTest(TestCase):
         request = self.factory.delete(
             '/movies/favourites', {
                 'imdbID': 'a1kjnj'
-            }
+            },
+            content_type='application/json'
         )
         response = FavouritesView().delete(request)
         self.assertEqual(response.status_code, 200)

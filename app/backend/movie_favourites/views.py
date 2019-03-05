@@ -56,7 +56,6 @@ class FavouritesView(GenericAPIView):
         """
         try:
             body = request.body.decode('utf-8')
-            body = body.replace("'", '"')
             body = json.loads(body)
             imdbID = body['imdbID']
         except JSONDecodeError:
