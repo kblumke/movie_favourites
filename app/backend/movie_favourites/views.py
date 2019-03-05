@@ -61,9 +61,7 @@ class FavouritesView(APIView):
         Remove movie from favourites.
         """
         try:
-            body = request.body.decode('utf-8')
-            body = json.loads(body)
-            imdbID = body['imdbID']
+            imdbID = request.data['imdbID']
         except JSONDecodeError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
