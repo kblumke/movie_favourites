@@ -19,7 +19,8 @@ class Label extends PureComponent {
             imdbID: '',
             type: '',
             favorite: false,
-            buttonType: 'primary'
+            buttonType: 'primary',
+            user_token: localStorage.token,
     };
     }
 
@@ -35,6 +36,7 @@ class Label extends PureComponent {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': 'Token ' + this.state.user_token
                 },
                 body: JSON.stringify({
                     'Poster': this.state.image,
@@ -49,6 +51,7 @@ class Label extends PureComponent {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': 'Token ' + this.state.user_token
                 },
                 body: JSON.stringify({
                     'imdbID': this.state.imdbID
