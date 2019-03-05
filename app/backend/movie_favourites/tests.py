@@ -2,7 +2,10 @@
 import json
 
 from django.db import IntegrityError
-from django.test import TestCase, RequestFactory
+from django.contrib.auth.models import User
+from django.test import TestCase
+
+from rest_framework.test import APIClient
 
 from movie_favourites.models import Film
 from movie_favourites.views import FavouritesView
@@ -46,7 +49,10 @@ class ViewsTest(TestCase):
 
     def setUp(self):
         """Set up Request factory."""
-        self.factory = RequestFactory()
+        self.user = User.objects.create(username='user', password='p@ssw0rd')
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+        self.client.login(username=self.user.username, passwrod=self.user.password)
 
     def prepare_data(self):
         """Prepare test data."""
@@ -78,8 +84,8 @@ class ViewsTest(TestCase):
         """Test that list of active items is returned."""
         self.prepare_data()
 
-        request = self.factory.get('/movies/favourites')
-        response = FavouritesView().as_view()(request)
+        response = self.client.get('/movies/favourites')
+
         resp = [
             {
                 'Poster': 'Poster',
@@ -108,59 +114,48 @@ class ViewsTest(TestCase):
 
     def test_adding_favourite(self):
         self.assertEqual(len(Film.objects.all()), 0)
-        request = self.factory.post(
-            '/movies/favourites', {
-                'Poster': 'Poster',
-                'Title': 'Title',
-                'Type': 'movie',
-                'Year': 'Year',
-                'imdbID': 'a1kjnj'
-            },
-            content_type='application/json'
-        )
-        response = FavouritesView().as_view()(request)
+        data = {
+            'Poster': 'Poster',
+            'Title': 'Title',
+            'Type': 'movie',
+            'Year': 'Year',
+            'imdbID': 'a1kjnj'
+        }
+        response = self.client.post('/movies/favourites', data)
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(len(Film.objects.all()), 0)
 
     def test_adding_favourite_failed(self):
         self.assertEqual(len(Film.objects.all()), 0)
-        request = self.factory.post(
-            '/movies/favourites', {
-                'Poster': 'Poster',
-                'Title': 'Title',
-                'Type': 'movies',
-                'Year': 'Year',
-                'imdbID': 'a1kjnj'
-            },
-            content_type='application/json'
-        )
-        response = FavouritesView().as_view()(request)
+        data = {
+            'Poster': 'Poster',
+            'Title': 'Title',
+            'Type': 'movies',
+            'Year': 'Year',
+            'imdbID': 'a1kjnj'
+        }
+        response = self.client.post('/movies/favourites', data)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(len(Film.objects.all()), 0)
 
     def test_deleting_film_from_favourites(self):
         self.prepare_data()
-        self.assertEqual(len(Film.objects.all()), 3)
 
-        request = self.factory.delete(
-            '/movies/favourites', {
-                'imdbID': 'a1kjnj'
-            },
-            content_type='application/json'
-        )
-        response = FavouritesView().as_view()(request)
+        self.assertEqual(len(Film.objects.all()), 3)
+        data = {
+            'imdbID': 'a1kjnj'
+        }
+        response = self.client.delete('/movies/favourites', data)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(Film.objects.all()), 2)
 
     def test_deleting_and_film_does_not_exist(self):
         self.prepare_data()
+        
         self.assertEqual(len(Film.objects.all()), 3)
-
-        request = self.factory.delete(
-            '/movies/favourites', {
-                'imdbID': 'a1kjnj111'
-            }
-        )
-        response = FavouritesView().as_view()(request)
+        data = {
+            'imdbID': 'a1kjnj111'
+        }
+        response = self.client.delete('/movies/favourites', data)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(len(Film.objects.all()), 3)
