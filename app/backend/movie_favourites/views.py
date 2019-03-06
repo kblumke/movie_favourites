@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from movie_favourites.models import Film
+from movie_favourites.models import Film, Favourite
 from movie_favourites.serializers import FavouritesSerializer
 
 
@@ -29,9 +29,11 @@ class FavouritesView(APIView):
         """
         response_data = []
 
-        all_films = Film.objects.all()
+        all_favourites = Favourite.objects.filter(
+            user=request.user)
 
-        for film in all_films:
+        for fav in all_favourites:
+            film = fav.film
             response_data.append({
                 'imdbID': film.imdbID,
                 'Poster': film.poster_url,
@@ -52,6 +54,7 @@ class FavouritesView(APIView):
                 title=request.data.get('Title'),
                 year=request.data.get('Year'),
                 movie_type=Film.TYPE_NAME_VALUE[request.data.get('Type')])
+            Favourite.objects.create(film=film, user=request.user)
             return Response(status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -61,7 +64,7 @@ class FavouritesView(APIView):
         Remove movie from favourites.
         """
         try:
-            imdbID = request.data['imdbID']
+            imdbID = request.data['imdbID']          
         except JSONDecodeError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -70,7 +73,7 @@ class FavouritesView(APIView):
         except Film.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        film.delete()
+        Favourite.objects.get(user=request.user, film=film).delete()
 
         return Response(status=status.HTTP_200_OK)
 
