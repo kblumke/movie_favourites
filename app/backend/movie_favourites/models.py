@@ -1,9 +1,9 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class Film(models.Model):
     """
-    Films model
+    Films model.
     """
     MOVIE = 1 
     SERIES = 2
@@ -28,4 +28,11 @@ class Film(models.Model):
         return self.title
 
 
-        
+class Favourite(models.Model):
+    """
+    Favourite model.
+    """
+    film = models.ForeignKey(
+        'Film', models.PROTECT, null=True, blank=True, default=None)
+    user = models.ForeignKey(
+        User, models.PROTECT, null=True, blank=True, default=None)

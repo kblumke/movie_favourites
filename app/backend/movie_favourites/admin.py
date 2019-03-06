@@ -1,5 +1,5 @@
 from django.contrib import admin
-from movie_favourites.models import  Film
+from movie_favourites.models import Film, Favourite
 
 
 class FilmAdmin(admin.ModelAdmin):
@@ -14,3 +14,12 @@ class FilmAdmin(admin.ModelAdmin):
 
 admin.site.register(Film, FilmAdmin)
 
+
+class FavouriteAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'film',
+    )
+    search_fields = ('user',)
+
+admin.site.register(Favourite, FavouriteAdmin)
