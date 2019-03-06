@@ -79,7 +79,9 @@ To run tests go to project folder (`movie_favourites/app/backend`) and run:
             3.10.10
 
     Go to project folder: `movie_favourites/app/frontend` and run command:
-
+    To install dependencies:
+        $ npm i
+    To start application:
         $ npm start
 
     and go to the link given in the terminal (usually http://127.0.0.1:3000/)
