@@ -7,7 +7,7 @@ from django.test import TestCase
 
 from rest_framework.test import APIClient
 
-from movie_favourites.models import Film
+from movie_favourites.models import Film, Favourite
 from movie_favourites.views import FavouritesView
 
 
@@ -72,13 +72,15 @@ class ViewsTest(TestCase):
             movie_type=2,
         )
 
-        fiml3 = Film.objects.create(
+        film3 = Film.objects.create(
             imdbID='a1kjnj3', 
             poster_url='Poster3', 
             title='Title3',
             year='Year',
             movie_type=3,
         )
+        for i in [film1, film2, film3]:
+            Favourite.objects.create(user=self.user, film=i)
 
     def test_list_active_items_response(self):
         """Test that list of active items is returned."""
@@ -140,22 +142,21 @@ class ViewsTest(TestCase):
 
     def test_deleting_film_from_favourites(self):
         self.prepare_data()
-
-        self.assertEqual(len(Film.objects.all()), 3)
+        self.assertEqual(len(Favourite.objects.filter(user=self.user)), 3)
         data = {
             'imdbID': 'a1kjnj'
         }
         response = self.client.delete('/movies/favourites', data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(Film.objects.all()), 2)
+        self.assertEqual(len(Favourite.objects.filter(user=self.user)), 2)
 
     def test_deleting_and_film_does_not_exist(self):
         self.prepare_data()
-        
-        self.assertEqual(len(Film.objects.all()), 3)
+
+        self.assertEqual(len(Favourite.objects.filter(user=self.user)), 3)
         data = {
             'imdbID': 'a1kjnj111'
         }
         response = self.client.delete('/movies/favourites', data)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(len(Film.objects.all()), 3)
+        self.assertEqual(len(Favourite.objects.filter(user=self.user)), 3)
