@@ -9,7 +9,7 @@ Python version: 3.6
 
 ## I. Copy the source code
 
-Clone the [git repository](https://github.com/kblumke/movie_favourites) as below:
+Clone the [git repository](https://github.com/kblumke/movie_favourites):
 
     $ git clone https://github.com/kblumke/movie_favourites.git
 
@@ -41,7 +41,7 @@ Go to project folder (`movie_favourites/app/backend`) and run:
 
     $ python manage.py migrate
 
-Create superuser (You will need that user later on to login into React app and add films to User's favourite):
+Create superuser (You will need that user later on to login into React app and to  add User's favourite):
 
     $ python manage.py createsuperuser
 
