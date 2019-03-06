@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-import Nav from 'react-bootstrap/Nav';
 import Search from './Search/Search';
 import Label from './Label/Label';
 import Pagination from "react-js-pagination";
