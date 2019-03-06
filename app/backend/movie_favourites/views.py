@@ -28,7 +28,6 @@ class FavouritesView(APIView):
         Return list of favourite films.
         """
         response_data = []
-
         all_favourites = Favourite.objects.filter(
             user=request.user)
 
@@ -72,8 +71,13 @@ class FavouritesView(APIView):
             film = Film.objects.get(imdbID=imdbID)
         except Film.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            favourite = Favourite.objects.get(user=request.user, film=film)
+        except Favourite.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        Favourite.objects.get(user=request.user, film=film).delete()
+        favourite.delete()
 
         return Response(status=status.HTTP_200_OK)
 
